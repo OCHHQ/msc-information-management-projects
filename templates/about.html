@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}About - IR Legal Search Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Hero Section -->
+        <div class="bg-primary text-white rounded p-5 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-4 mb-3">IR Legal Search Tool</h1>
+                    <p class="lead">An advanced information retrieval system designed for efficient legal document search and analysis</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-search fa-5x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column - Project Info -->
+            <div class="col-lg-8">
+                <!-- Project Overview -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0"><i class="fas fa-project-diagram me-2"></i>Project Overview</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">A comprehensive web-based document search application that leverages advanced information retrieval techniques for legal research and document analysis.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6 class="text-primary"><i class="fas fa-bullseye me-2"></i>Objectives</h6>
+                                <ul>
+                                    <li>Efficient document indexing and retrieval</li>
+                                    <li>Advanced search query processing</li>
+                                    <li>Accurate relevance ranking</li>
+                                    <li>User-friendly web interface</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-success"><i class="fas fa-check-circle me-2"></i>Key Features</h6>
+                                <ul>
+                                    <li>Phrase search with exact matching</li>
+                                    <li>Boolean operators (AND/OR/NOT)</li>
+                                    <li>Intelligent result ranking</li>
+                                    <li>PDF document processing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Implementation -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0"><i class="fas fa-code me-2"></i>Technical Implementation</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="tech-stack-item p-3 bg-light rounded">
+                                    <h6><i class="fab fa-python text-primary me-2"></i>Backend</h6>
+                                    <ul class="mb-0 small text-dark">
+                                        <li>Python 3.x</li>
+                                        <li>Flask Web Framework</li>
+                                        <li>PyPDF2 / pdfplumber</li>
+                                        <li>NLTK for text processing</li>
+                                        <li>Regular expressions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="tech-stack-item p-3 bg-light rounded">
+                                    <h6><i class="fab fa-html5 text-danger me-2"></i>Frontend</h6>
+                                    <ul class="mb-0 small text-dark">
+                                        <li>HTML5 & CSS3</li>
+                                        <li>Bootstrap 5</li>
+                                        <li>JavaScript (ES6+)</li>
+                                        <li>Font Awesome Icons</li>
+                                        <li>Responsive Design</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 p-3 bg-info bg-opacity-10 rounded">
+                            <h6 class="text-info"><i class="fas fa-brain me-2"></i>Core Algorithms</h6>
+                            <div class="row small">
+                                <div class="col-md-4">
+                                    <strong>Text Extraction:</strong> PDF parsing and preprocessing
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Query Processing:</strong> Boolean logic and phrase matching
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Ranking:</strong> TF-IDF based relevance scoring
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Capabilities -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0"><i class="fas fa-search-plus me-2"></i>Search Capabilities</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Search Type</th>
+                                        <th>Example</th>
+                                        <th>Use Case</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-primary">Phrase Search</span></td>
+                                        <td><code>"information system"</code></td>
+                                        <td>Exact phrase matching for legal terms</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">Boolean AND</span></td>
+                                        <td><code>contract AND liability</code></td>
+                                        <td>Documents containing all terms</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info">Boolean OR</span></td>
+                                        <td><code>data OR information</code></td>
+                                        <td>Documents with any of the terms</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-warning">Boolean NOT</span></td>
+                                        <td><code>system NOT network</code></td>
+                                        <td>Excluding unwanted terms</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Developer Info -->
+            <div class="col-lg-4">
+                <!-- Developer Profile Card -->
+                <div class="card mb-4 shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h5 class="mb-0">Developer</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- Profile Image -->
+                        <div class="mb-3">
+                            <img src="{{ url_for('static', filename='images/enoseje.jpg') }}" 
+                                 alt="Developer Photo" 
+                                 class="rounded-circle img-fluid profile-img"
+                                 style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #0d6efd;"
+                                 onerror="this.src='https://via.placeholder.com/150?text=Your+Photo'">
+                        </div>
+                        
+                        <!-- Developer Info -->
+						<h4 class="mb-1">Collins Enoseje</h4>
+						<p class="text-dark mb-2">Backend Developer | MSc Information Management</p>
+						<p class="small text-secondary mb-3">
+							Passionate about building intelligent search systems and secure applications 
+							that bridge technology and real-world needs.
+						</p>
+
+                        
+                        <!-- Contact Links -->
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="mailto:enosejec@gmail.com.com" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </a>
+                            <a href="https://linkedin.com/in/collinsenoseje" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fab fa-linkedin me-2"></i>LinkedIn
+                            </a>
+                            <a href="https://github.com/OCHHQ" class="btn btn-outline-dark btn-sm" target="_blank">
+                                <i class="fab fa-github me-2"></i>GitHub
+                            </a>
+                        </div>
+                        
+                        <!-- Skills -->
+                        <div class="text-start mt-4">
+                            <h6 class="text-muted mb-2"><i class="fas fa-tools me-2"></i>Technical Skills</h6>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-primary">Python</span>
+                                <span class="badge bg-success">Flask</span>
+                                <span class="badge bg-info">Information Retrieval</span>
+                                <span class="badge bg-warning text-dark">Web Development</span>
+                                <span class="badge bg-danger">Data Analysis</span>
+                                <span class="badge bg-secondary">PDF Processing</span>
+                                <span class="badge bg-dark">APIs</span>
+                                <span class="badge bg-primary">SQL/Databases</span>
+                                <span class="badge bg-success">Git/GitHub</span>
+                                <span class="badge bg-info">RESTful Design</span>
+                                <span class="badge bg-warning text-dark">NLP</span>
+                                <span class="badge bg-danger">Algorithm Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+				</div>
+
+                <!-- ADD THIS: Developer Bio Card -->
+                <!-- Developer Bio Card -->
+				<div class="card mb-4 shadow-sm">
+					<div class="card-header bg-info text-white">
+						<h6 class="mb-0 text-white"><i class="fas fa-user me-2"></i>About the Developer</h6>
+					</div>
+					<div class="card-body bg-white">
+						<p class="text-dark">
+							I am a backend developer and MSc candidate in Information Management at Ahmadu Bello University. 
+							My work focuses on <strong>Python, information retrieval, and data-driven applications</strong>. 
+							With hands-on experience in <em>Flask, databases, and cloud integration</em>, I aim to build 
+							secure and efficient tools that improve access to knowledge.
+						</p>
+						<p class="mb-0 text-dark">
+							This project demonstrates my ability to combine <strong>theoretical knowledge with practical implementation</strong>, 
+							creating production-ready applications that solve real-world information retrieval challenges.
+						</p>
+					</div>
+				</div>
+
+
+                <!-- Project Stats -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Project Statistics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="stat-box p-3 bg-light rounded">
+                                    <h3 class="text-primary mb-0">3</h3>
+                                    <small class="text-muted">Search Types</small>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stat-box p-3 bg-light rounded">
+                                    <h3 class="text-success mb-0">100%</h3>
+                                    <small class="text-muted">Accuracy</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box p-3 bg-light rounded">
+                                    <h3 class="text-info mb-0"><1s</h3>
+                                    <small class="text-muted">Search Speed</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box p-3 bg-light rounded">
+                                    <h3 class="text-warning mb-0">PDF</h3>
+                                    <small class="text-muted">Format Support</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Context -->
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h6 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Academic Project</h6>
+                    </div>
+                    <div class="card-body small">
+                        <p><strong>Course:</strong> Information Retrieval Systems</p>
+                        <p><strong>Program:</strong> MSc Information Management</p>
+                        <p><strong>Institution:</strong> Ahmadu Bello University</p>
+                        <p class="mb-0"><strong>Year:</strong> 2024/2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mt-5">
+            <div class="card bg-primary text-white">
+                <div class="card-body py-4">
+                    <h3 class="mb-3">Ready to Search?</h3>
+                    <p class="lead mb-4">Start using the IR Legal Search Tool to find relevant documents quickly</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-light btn-lg">
+                            <i class="fas fa-search me-2"></i>Start Searching
+                        </a>
+                        <a href="{{ url_for('help') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-question-circle me-2"></i>Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-img {
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+}
+
+.tech-stack-item {
+    transition: transform 0.2s ease;
+}
+
+.tech-stack-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.stat-box {
+    transition: all 0.2s ease;
+}
+
+.stat-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

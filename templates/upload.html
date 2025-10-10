@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Upload Documents{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">Upload PDF Documents</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Choose PDF File</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".pdf" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>Upload
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-4">
+            <h6>Requirements:</h6>
+            <ul class="mb-0">
+                <li>Only PDF files are accepted</li>
+                <li>Files will be saved to the data folder</li>
+                <li>After upload, files will be searchable immediately</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

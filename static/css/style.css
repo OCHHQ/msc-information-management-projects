@@ -1,0 +1,345 @@
+/* Custom styles for IR Legal Search Tool */
+
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.2s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+}
+
+/* Search Form */
+.input-group-lg .form-control {
+    border-radius: 8px 0 0 8px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-group-lg .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-lg .btn {
+    border-radius: 0 8px 8px 0;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+/* Example Query Buttons */
+.example-query {
+    transition: all 0.2s ease;
+    font-family: 'Courier New', monospace;
+    border-radius: 20px;
+}
+
+.example-query:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Feature Highlights */
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.feature-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Search Results */
+.match-result {
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.match-result:hover {
+    background-color: #f8f9fa !important;
+    border-left-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.match-text {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+/* Highlighting */
+.highlight {
+    background-color: #ffeb3b !important;  /* Bright yellow */
+    color: #000 !important;  /* Black text */
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 700;  /* Extra bold */
+    border: 2px solid #ff9800;  /* Orange border for extra visibility */
+    box-shadow: 0 2px 4px rgba(255, 152, 0, 0.4);  /* Subtle shadow */
+    display: inline-block;
+}
+
+@keyframes highlightFade {
+    from { background-color: #ffeeba; }
+    to { background-color: #fff3cd; }
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+    border: none;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+    border: none;
+}
+
+/* Badges */
+.badge {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 0.4em 0.6em;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* File Upload Styles */
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.upload-area.dragover {
+    border-color: var(--success-color);
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+/* Progress Bars */
+.progress {
+    border-radius: 10px;
+    height: 8px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--info-color) 100%);
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+footer a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: var(--info-color) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .input-group-lg .form-control,
+    .input-group-lg .btn {
+        font-size: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .match-result {
+        padding: 1rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .example-query {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bs-body-bg: #121212;
+        --bs-body-color: #ffffff;
+    }
+    
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+    
+    .card {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+    
+    .match-result {
+        background-color: #2d2d2d !important;
+    }
+    
+    .highlight {
+        background-color: #4a4a00;
+        color: #ffff88;
+    }
+}
+
+/* Accessibility */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+.btn-outline-dark {
+    color: #212529;
+    border-color: #212529;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-outline-dark:hover {
+    background-color: #212529;
+    color: #fff;
+}
+
+/* Focus states for keyboard navigation */
+.btn:focus,
+.form-control:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    footer,
+    .btn,
+    .position-fixed {
+        display: none !important;
+    }
+    
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+    
+    .highlight {
+        background-color: #ffff00 !important;
+        color: #000000 !important;
+    }
+}

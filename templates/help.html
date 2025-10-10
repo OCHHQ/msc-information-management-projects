@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Help - IR Legal Search Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-5 mb-3">
+                <i class="fas fa-question-circle text-primary me-3"></i>
+                Search Help & Guide
+            </h1>
+            <p class="lead text-light opacity-75">
+                Learn how to use the IR Legal Search Tool effectively
+            </p>
+        </div>
+
+        <!-- Search Types -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-search me-2"></i>Search Types</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 60px; height: 60px;">
+                                <i class="fas fa-quotes-left text-primary fa-lg"></i>
+                            </div>
+                            <h5>Phrase Search</h5>
+                            <p class="text-muted">Search for exact phrases using quotation marks</p>
+                        </div>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Example:</strong><br>
+                            <code>"contract law"</code><br>
+                            <code>"information system"</code><br>
+                            <code>"legal framework"</code>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 60px; height: 60px;">
+                                <i class="fas fa-project-diagram text-success fa-lg"></i>
+                            </div>
+                            <h5>Boolean Search</h5>
+                            <p class="text-muted">Combine terms using AND, OR, NOT operators</p>
+                        </div>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Examples:</strong><br>
+                            <code>contract AND liability</code><br>
+                            <code>data OR information</code><br>
+                            <code>copyright NOT trademark</code>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="text-center">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                 style="width: 60px; height: 60px;">
+                                <i class="fas fa-keyboard text-info fa-lg"></i>
+                            </div>
+                            <h5>Simple Search</h5>
+                            <p class="text-muted">Search for individual words or terms</p>
+                        </div>
+                        <div class="bg-light p-3 rounded">
+                            <strong>Examples:</strong><br>
+                            <code>contract</code><br>
+                            <code>liability</code><br>
+                            <code>copyright</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Tips -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Search Tips</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check text-success me-2"></i>Do's</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i>Use quotes for exact phrases</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i>Combine terms with AND for precise results</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i>Use OR to broaden your search</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i>Try different synonyms</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i>Use NOT to exclude unwanted terms</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-times text-danger me-2"></i>Don'ts</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-arrow-right text-danger me-2"></i>Don't use too many operators in one search</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-danger me-2"></i>Don't search for very common words alone</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-danger me-2"></i>Don't forget quotation marks for phrases</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-danger me-2"></i>Don't use special characters unnecessarily</li>
+                            <li class="mb-2"><i class="fas fa-arrow-right text-danger me-2"></i>Don't make queries too complex</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Examples -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="fas fa-code me-2"></i>Advanced Search Examples</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Search Query</th>
+                                <th>What it finds</th>
+                                <th>Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>"data protection"</code></td>
+                                <td>Documents containing the exact phrase "data protection"</td>
+                                <td>Finding specific legal concepts</td>
+                            </tr>
+                            <tr>
+                                <td><code>privacy AND security</code></td>
+                                <td>Documents containing both "privacy" and "security"</td>
+                                <td>Finding comprehensive coverage of topics</td>
+                            </tr>
+                            <tr>
+                                <td><code>contract OR agreement</code></td>
+                                <td>Documents containing either "contract" or "agreement"</td>
+                                <td>Finding documents with similar concepts</td>
+                            </tr>
+                            <tr>
+                                <td><code>copyright NOT trademark</code></td>
+                                <td>Documents with "copyright" but not "trademark"</td>
+                                <td>Excluding unwanted results</td>
+                            </tr>
+                            <tr>
+                                <td><code>"intellectual property" AND licensing</code></td>
+                                <td>Documents with the phrase and the term</td>
+                                <td>Complex legal research</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Shortcut</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><kbd>Ctrl</kbd> + <kbd>/</kbd></td>
+                                    <td>Focus search box</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
+                                    <td>Submit search</td>
+                                </tr>
+                                <tr>
+                                    <td><kbd>Esc</kbd></td>
+                                    <td>Clear search box</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded">
+                            <h6>Pro Tip:</h6>
+                            <p class="mb-0 small">
+                                Press <kbd>Ctrl</kbd> + <kbd>/</kbd> from anywhere on the site to quickly start a new search!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-tools me-2"></i>Troubleshooting</h4>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="troubleshootingAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                No results found for my search
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#troubleshootingAccordion">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li>Check your spelling</li>
+                                    <li>Try broader or simpler terms</li>
+                                    <li>Use synonyms or alternative terms</li>
+                                    <li>Remove quotes to search for individual words</li>
+                                    <li>Ensure your documents contain the terms you're searching for</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                Search is too slow
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li>Use more specific search terms</li>
+                                    <li>Avoid searching for very common words</li>
+                                    <li>Use boolean operators to narrow results</li>
+                                    <li>Consider the size and number of PDF files</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                Boolean search not working
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                            <div class="accordion-body">
+                                <ul>
+                                    <li>Make sure operators are in UPPERCASE (AND, OR, NOT)</li>
+                                    <li>Use spaces around operators: <code>word AND word</code></li>
+                                    <li>Don't mix quotes with boolean operators</li>
+                                    <li>Start with simple boolean queries</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact/Support -->
+        <div class="text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h5><i class="fas fa-life-ring text-primary me-2"></i>Need More Help?</h5>
+                    <p class="lead text-light opacity-75">
+                        If you're still having trouble, don't hesitate to reach out for support.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ url_for('about') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle me-1"></i>About This Tool
+                        </a>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i>Start Searching
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

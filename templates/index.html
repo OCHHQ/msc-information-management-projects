@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Search - IR Legal Search Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">
+                <i class="fas fa-search text-primary me-3"></i>
+                Legal Document Search
+            </h1>
+            <p class="lead text-secondary fs-4 fw-semibold">
+                Search across legal documents with advanced phrase and boolean search capabilities
+            </p>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-magnifying-glass me-2"></i>
+                    Search Documents
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('search') }}" id="searchForm">
+                    <div class="mb-4">
+                        <label for="query" class="form-label h5">Search Query</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="query" 
+                                name="query" 
+                                placeholder='Enter search terms, "exact phrases", or boolean queries...'
+                                required
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                        <div class="form-text text-secondary mt-2">
+                            <strong>Search Tips:</strong> 
+                            Use quotes for exact phrases ("contract law"), 
+                            AND/OR/NOT for boolean search (contract AND liability)
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Search Examples -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h6 class="text-secondary mb-3">
+                            <i class="fas fa-lightbulb me-2"></i>Example Searches
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-secondary btn-sm example-query" 
+                                    data-query='"information system"'>
+                                "information system"
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm example-query" 
+                                    data-query="contract AND liability">
+                                contract AND liability
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm example-query" 
+                                    data-query="data OR information">
+                                data OR information
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm example-query" 
+                                    data-query='"legal framework"'>
+                                "legal framework"
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Library Status -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-file-pdf text-danger me-2"></i>
+                    Document Library
+                </h5>
+                
+                {% if pdf_files %}
+                    <p class="text-success mb-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ pdf_files|length }} PDF documents available for search
+                    </p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Available Documents:</h6>
+                            <ul class="list-group list-group-flush">
+                                {% for file in pdf_files[:5] %}
+                                    <li class="list-group-item border-0 py-1 px-0">
+                                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                                        <small>{{ file }}</small>
+                                    </li>
+                                {% endfor %}
+                                {% if pdf_files|length > 5 %}
+                                    <li class="list-group-item border-0 py-1 px-0 text-muted">
+                                        <small>... and {{ pdf_files|length - 5 }} more documents</small>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-upload fa-2x text-primary mb-2"></i>
+                                <p class="mb-2">Need to add more documents?</p>
+                                <a href="{{ url_for('upload_file') }}" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-upload me-1"></i>Upload PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-3">No PDF documents found in the library</p>
+                        <a href="{{ url_for('upload_file') }}" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Upload Your First Document
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Feature Highlights -->
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-quotes-left fa-lg"></i>
+                    </div>
+                    <h5>Phrase Search</h5>
+                    <p class="text-secondary mb-3">Find exact phrases using quotation marks for precise legal term matching</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-project-diagram fa-lg"></i>
+                    </div>
+                    <h5>Boolean Logic</h5>
+                    <p class="text-muted">Use AND, OR, NOT operators to create complex search queries</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 60px; height: 60px;">
+                        <i class="fas fa-ranking-star fa-lg"></i>
+                    </div>
+                    <h5>Smart Ranking</h5>
+                    <p class="text-muted">Results ranked by relevance with context highlighting</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add click handlers for example queries
+document.addEventListener('DOMContentLoaded', function() {
+    const exampleButtons = document.querySelectorAll('.example-query');
+    const queryInput = document.getElementById('query');
+    
+    exampleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            queryInput.value = this.dataset.query;
+            queryInput.focus();
+        });
+    });
+});
+</script>
+{% endblock %}

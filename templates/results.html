@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - IR Legal Search Tool{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Search Summary -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-1">
+                            <i class="fas fa-search-plus text-primary me-2"></i>
+                            Search Results for: <span class="text-primary">"{{ results.query }}"</span>
+                        </h4>
+                        <p class="text-muted mb-0">
+                            Found <strong>{{ results.total_matches }}</strong> matches 
+                            in <strong>{{ results.files_with_matches }}</strong> of {{ results.files_searched }} documents
+                            <small class="text-muted">({{ "%.2f"|format(results.search_time) }}s)</small>
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-search me-1"></i>New Search
+                        </a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-download me-1"></i>Export
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="exportResults('txt')">
+                                    <i class="fas fa-file-text me-2"></i>Text File
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="exportResults('csv')">
+                                    <i class="fas fa-file-csv me-2"></i>CSV File
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="exportResults('html')">
+                                    <i class="fas fa-file-code me-2"></i>HTML Report
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if results.error %}
+            <!-- Error Message -->
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Error:</strong> {{ results.error }}
+            </div>
+        {% elif results.total_matches == 0 %}
+            <!-- No Results -->
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                <h3 class="text-muted">No matches found</h3>
+                <p class="text-muted mb-4">
+                    Try adjusting your search terms or check the search tips below
+                </p>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Search Tips:</h5>
+                        <ul class="list-unstyled text-start">
+                            <li><i class="fas fa-lightbulb text-warning me-2"></i>Use quotes for exact phrases: <code>"contract law"</code></li>
+                            <li><i class="fas fa-lightbulb text-warning me-2"></i>Try broader terms: <code>contract</code> instead of <code>contractual obligations</code></li>
+                            <li><i class="fas fa-lightbulb text-warning me-2"></i>Use boolean operators: <code>contract AND liability</code></li>
+                            <li><i class="fas fa-lightbulb text-warning me-2"></i>Check spelling and try synonyms</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Results by File -->
+            {% for filename, file_data in results.matches_by_file.items() %}
+                {% if file_data.count > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-pdf text-danger me-2"></i>
+                                    {{ filename }}
+                                </h5>
+                                <small class="text-muted">
+                                    {{ file_data.count }} matches 
+                                    <span class="badge bg-secondary ms-2">{{ file_data.search_type }}</span>
+                                </small>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-outline-primary btn-sm" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#matches-{{ loop.index }}"
+                                        aria-expanded="true">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse show" id="matches-{{ loop.index }}">
+                        <div class="card-body">
+                            {% for match in file_data.matches %}
+                                <div class="match-result mb-3 p-3 bg-light rounded">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <small class="text-muted">Match {{ loop.index }} of {{ file_data.count }}</small>
+                                        <div>
+                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="highlightText('match-{{ loop.index0 }}', '{{ results.query }}')">
+                                                <i class="fas fa-highlighter"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="copyToClipboard('match-{{ loop.index0 }}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="match-text mb-0" id="match-{{ loop.index0 }}">
+                                        {{ match }}
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% elif file_data.error %}
+                <div class="card mb-3 border-warning">
+                    <div class="card-body">
+                        <h6 class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>{{ filename }}
+                        </h6>
+                        <small class="text-muted">Error: {{ file_data.error }}</small>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Results Summary Sidebar -->
+{% if results.total_matches > 0 %}
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+    <div class="card shadow">
+        <div class="card-body">
+            <h6 class="card-title">
+                <i class="fas fa-chart-bar text-primary me-2"></i>Summary
+            </h6>
+            <p class="card-text small mb-1">
+                <strong>{{ results.total_matches }}</strong> total matches
+            </p>
+            <p class="card-text small mb-0">
+                <strong>{{ results.files_with_matches }}/{{ results.files_searched }}</strong> files
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function highlightText(elementId, query) {
+    const element = document.getElementById(elementId);
+    const text = element.innerHTML;
+    
+    // Remove existing highlights
+    const cleanText = text.replace(/<mark class="highlight">/g, '').replace(/<\/mark>/g, '');
+    
+    // Clean query (remove quotes for highlighting)
+    let searchTerm = query.replace(/"/g, '');
+    
+    // Create case-insensitive regex
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    
+    // Apply highlighting
+    const highlightedText = cleanText.replace(regex, '<mark class="highlight">$1</mark>');
+    
+    element.innerHTML = highlightedText;
+}
+
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    const text = element.innerText;
+    
+    navigator.clipboard.writeText(text).then(function() {
+        // Show success feedback
+        const btn = event.target.closest('button');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check text-success"></i>';
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+        }, 2000);
+    });
+}
+
+function exportResults(format) {
+    // This would typically make an AJAX call to export endpoint
+    alert(`Export to ${format.toUpperCase()} format - Feature to be implemented`);
+}
+
+// Auto-highlight search terms on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const query = "{{ results.query }}";
+    const matches = document.querySelectorAll('.match-text');
+    
+    matches.forEach((match, index) => {
+        highlightText(match.id, query);
+    });
+});
+</script>
+
+<style>
+.highlight {
+    background-color: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.match-result:hover {
+    background-color: #f8f9fa !important;
+    border-left: 4px solid #0d6efd;
+    transition: all 0.2s ease;
+}
+
+.match-text {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+</style>
+{% endblock %}
