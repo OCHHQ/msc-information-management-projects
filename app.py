@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import uuid
+import io
 
 
 #my existing modules
@@ -160,6 +161,115 @@ def search():
 
     return render_template('results.html', results=results)
 
+@app.route('/export/<format>', methods=['POST'])
+def export_results(format):
+    """Export search results to different formats"""
+    from datetime import datetime
+    
+    try:
+        data = request.get_json()
+        query = data.get('query', 'Unknown Query')
+        results = data.get('results', [])
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        if format == 'txt':
+            # Text export
+            output = io.StringIO()
+            output.write(f"IR LEGAL SEARCH RESULTS\n")
+            output.write(f"{'='*70}\n")
+            output.write(f"Query: {query}\n")
+            output.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            output.write(f"Total Results: {len(results)}\n")
+            output.write(f"{'='*70}\n\n")
+            
+            for i, result in enumerate(results, 1):
+                output.write(f"Result {i}:\n")
+                output.write(f"{result['text']}\n")
+                output.write(f"Source: {result['filename']}\n")
+                output.write(f"{'-'*70}\n\n")
+            
+            output.seek(0)
+            return send_file(
+                io.BytesIO(output.getvalue().encode('utf-8')),
+                mimetype='text/plain',
+                as_attachment=True,
+                download_name=f'search_results_{timestamp}.txt'
+            )
+        
+        elif format == 'csv':
+            # CSV export
+            output = io.StringIO()
+            output.write('Index,Filename,Match Text\n')
+            
+            for i, result in enumerate(results, 1):
+                text = result['text'].replace('"', '""')  # Escape quotes
+                filename = result['filename'].replace('"', '""')
+                output.write(f'{i},"{filename}","{text}"\n')
+            
+            output.seek(0)
+            return send_file(
+                io.BytesIO(output.getvalue().encode('utf-8')),
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name=f'search_results_{timestamp}.csv'
+            )
+        
+        elif format == 'html':
+            # HTML export
+            html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results - {query}</title>
+    <style>
+        body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
+        .header {{ background: #0d6efd; color: white; padding: 20px; border-radius: 8px; }}
+        .result {{ background: white; padding: 15px; margin: 15px 0; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        .result-header {{ color: #0d6efd; font-weight: bold; margin-bottom: 10px; }}
+        .filename {{ color: #666; font-size: 0.9em; margin-top: 10px; }}
+        .highlight {{ background-color: #ffeb3b; padding: 2px 4px; border-radius: 3px; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>IR Legal Search Results</h1>
+        <p><strong>Query:</strong> {query}</p>
+        <p><strong>Date:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+        <p><strong>Total Results:</strong> {len(results)}</p>
+    </div>
+"""
+            
+            for i, result in enumerate(results, 1):
+                text = result['text'].replace('<', '&lt;').replace('>', '&gt;')
+                html += f"""
+    <div class="result">
+        <div class="result-header">Result {i}</div>
+        <div>{text}</div>
+        <div class="filename">Source: {result['filename']}</div>
+    </div>
+"""
+            
+            html += """
+</body>
+</html>
+"""
+            
+            return send_file(
+                io.BytesIO(html.encode('utf-8')),
+                mimetype='text/html',
+                as_attachment=True,
+                download_name=f'search_results_{timestamp}.html'
+            )
+        
+        else:
+            return jsonify({'error': 'Invalid format'}), 400
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/api/search', methods=['POST'])
 def api_search():
     """MY API SEARCH ENDPOINT FOR (for AJAX requests)"""
@@ -205,12 +315,6 @@ def upload_file():
 
 
 
-@app.route('/export/<export_id>')
-def export_results(export_id):
-    """Export search results"""
-    # Normally this would typically retrieve saved result
-    #for now i would return a placeholder
-    return "Export funtionality - to be implemented soon Thank you"
 
 
 @app.route('/about')

@@ -279,21 +279,58 @@ function showCopyFeedback(element) {
 
 // Export Functions
 function exportResults(format) {
-    const results = gatherResultsData();
+    // Gather all results from the page
+    const query = document.querySelector('[data-query]')?.dataset.query || 
+                  document.querySelector('.text-primary')?.textContent || 
+                  'Search Results';
     
-    switch(format) {
-        case 'txt':
-            exportAsText(results);
-            break;
-        case 'csv':
-            exportAsCSV(results);
-            break;
-        case 'html':
-            exportAsHTML(results);
-            break;
-        default:
-            console.error('Unknown export format:', format);
+    const results = [];
+    const matchElements = document.querySelectorAll('.match-text');
+    
+    matchElements.forEach((element) => {
+        const filename = element.closest('.card').querySelector('h5')?.textContent.trim() || 'Unknown';
+        results.push({
+            text: element.innerText,
+            filename: filename.replace(/\s+/g, ' ').trim()
+        });
+    });
+    
+    if (results.length === 0) {
+        showNotification('No results to export', 'warning');
+        return;
     }
+    
+    // Send to backend for export
+    fetch(`/export/${format}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query: query,
+            results: results
+        })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Export failed');
+        return response.blob();
+    })
+    .then(blob => {
+        // Download the file
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `search_results_${Date.now()}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showNotification(`Results exported as ${format.toUpperCase()}`, 'success');
+    })
+    .catch(error => {
+        showNotification('Export failed: ' + error.message, 'error');
+    });
 }
 
 function gatherResultsData() {
@@ -622,17 +659,7 @@ window.addEventListener('error', function(e) {
 });
 
 // Service Worker Registration (for offline support - future enhancement)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/static/js/sw.js')
-            .then(function(registration) {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(function(err) {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
-}
+//Remove due to some resason 
 
 // Analytics Integration (placeholder)
 function trackEvent(category, action, label) {
