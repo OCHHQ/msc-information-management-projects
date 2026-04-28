@@ -3,7 +3,7 @@
 {% block title %}Search Results - IR Legal Search Tool{% endblock %}
 
 {% block content %}
-<div class="row">
+<div class="row" data-query="{{ results.query }}">
     <div class="col-12">
         <!-- Search Summary -->
         <div class="card mb-4">
@@ -51,6 +51,11 @@
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 <strong>Error:</strong> {{ results.error }}
             </div>
+        {% elif results.warning %}
+            <div class="alert alert-warning">
+                <i class="fas fa-clock me-2"></i>
+                <strong>Warning:</strong> {{ results.warning }}
+            </div>
         {% elif results.total_matches == 0 %}
             <!-- No Results -->
             <div class="text-center py-5">
@@ -87,6 +92,9 @@
                                 <small class="text-muted">
                                     {{ file_data.count }} matches 
                                     <span class="badge bg-secondary ms-2">{{ file_data.search_type }}</span>
+                                    {% if file_data.cache_hit %}
+                                        <span class="badge bg-success ms-2">cached</span>
+                                    {% endif %}
                                 </small>
                             </div>
                             <div class="col-auto">
@@ -107,20 +115,25 @@
                                         <small class="text-muted">Match {{ loop.index }} of {{ file_data.count }}</small>
                                         <div>
                                             <button class="btn btn-sm btn-outline-secondary" 
-                                                    onclick="highlightText('match-{{ loop.index0 }}', '{{ results.query }}')">
+                                                    onclick="highlightText('match-{{ filename|replace(' ', '-')|replace('.', '-') }}-{{ loop.index0 }}', '{{ results.query }}')">
                                                 <i class="fas fa-highlighter"></i>
                                             </button>
                                             <button class="btn btn-sm btn-outline-secondary" 
-                                                    onclick="copyToClipboard('match-{{ loop.index0 }}')">
+                                                    onclick="copyToClipboard('match-{{ filename|replace(' ', '-')|replace('.', '-') }}-{{ loop.index0 }}')">
                                                 <i class="fas fa-copy"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <p class="match-text mb-0" id="match-{{ loop.index0 }}">
+                                    <p class="match-text mb-0" id="match-{{ filename|replace(' ', '-')|replace('.', '-') }}-{{ loop.index0 }}">
                                         {{ match }}
                                     </p>
                                 </div>
                             {% endfor %}
+                            {% if file_data.warning %}
+                                <div class="alert alert-secondary mb-0 mt-3">
+                                    <small>{{ file_data.warning }}</small>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -157,58 +170,6 @@
     </div>
 </div>
 {% endif %}
-
-<script>
-function highlightText(elementId, query) {
-    const element = document.getElementById(elementId);
-    const text = element.innerHTML;
-    
-    // Remove existing highlights
-    const cleanText = text.replace(/<mark class="highlight">/g, '').replace(/<\/mark>/g, '');
-    
-    // Clean query (remove quotes for highlighting)
-    let searchTerm = query.replace(/"/g, '');
-    
-    // Create case-insensitive regex
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    
-    // Apply highlighting
-    const highlightedText = cleanText.replace(regex, '<mark class="highlight">$1</mark>');
-    
-    element.innerHTML = highlightedText;
-}
-
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.innerText;
-    
-    navigator.clipboard.writeText(text).then(function() {
-        // Show success feedback
-        const btn = event.target.closest('button');
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-check text-success"></i>';
-        
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-        }, 2000);
-    });
-}
-
-function exportResults(format) {
-    // This would typically make an AJAX call to export endpoint
-    alert(`Export to ${format.toUpperCase()} format - Feature to be implemented`);
-}
-
-// Auto-highlight search terms on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const query = "{{ results.query }}";
-    const matches = document.querySelectorAll('.match-text');
-    
-    matches.forEach((match, index) => {
-        highlightText(match.id, query);
-    });
-});
-</script>
 
 <style>
 .highlight {

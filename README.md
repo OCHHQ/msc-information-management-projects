@@ -52,6 +52,16 @@ ir_legal_search_tool/
 └── requirements.txt    # Python dependencies
 ```
 
+## Short Architecture
+
+The application uses a simple request pipeline:
+
+1. Users upload PDF files into `data/`.
+2. The server extracts text from each PDF and stores a JSON text cache in `cache/pdf_text/`.
+3. Search requests read cached text first, then run phrase, boolean, or simple keyword search.
+4. Results are ranked, trimmed per file, and rendered in the web UI or returned as JSON.
+5. Health and logging endpoints help diagnose deployment issues on Render.
+
 ## Development
 
 This tool was developed as part of an MSc Information Management project, demonstrating advanced information retrieval techniques and web application development.

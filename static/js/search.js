@@ -141,6 +141,10 @@ function uploadFile(file) {
     
     fetch('/upload', {
         method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
         body: formData
     })
     .then(response => response.json())
@@ -222,11 +226,11 @@ function initializeCollapseButtons() {
 }
 
 function initializeCopyButtons() {
-    const copyButtons = document.querySelectorAll('[onclick*="copyToClipboard"]');
+    const copyButtons = document.querySelectorAll('[data-copy-target]');
     copyButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetId = this.getAttribute('onclick').match(/copyToClipboard\('([^']+)'\)/)[1];
+            const targetId = this.dataset.copyTarget;
             copyToClipboard(targetId);
         });
     });
