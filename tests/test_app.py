@@ -48,6 +48,7 @@ def test_healthz_reports_pdf_and_cache_counts(client, monkeypatch):
 
 def test_api_search_reports_file_level_errors(client, monkeypatch):
     monkeypatch.setattr(app_module, "list_pdf_files", lambda: ["good.pdf", "bad.pdf"])
+    monkeypatch.setattr(app_module, "SEARCH_USES_ONLY_CACHED_TEXT", False)
 
     def fake_get_pdf_text(pdf_path, force_refresh=False):
         if Path(pdf_path).name == "bad.pdf":
@@ -71,6 +72,7 @@ def test_api_search_reports_file_level_errors(client, monkeypatch):
 
 def test_api_search_returns_partial_results_on_timeout(client, monkeypatch):
     monkeypatch.setattr(app_module, "list_pdf_files", lambda: ["slow-a.pdf", "slow-b.pdf"])
+    monkeypatch.setattr(app_module, "SEARCH_USES_ONLY_CACHED_TEXT", False)
     monkeypatch.setattr(app_module, "get_pdf_text", lambda pdf_path, force_refresh=False: ("text", True))
     monkeypatch.setattr(app_module, "advanced_search", lambda text, query: [])
     monkeypatch.setattr(app_module, "rank_results", lambda matches, query: matches)
@@ -84,3 +86,25 @@ def test_api_search_returns_partial_results_on_timeout(client, monkeypatch):
     assert response.status_code == 200
     assert payload["timed_out"] is True
     assert "Partial results" in payload["warning"]
+
+
+def test_api_search_skips_unindexed_files_when_cache_only_mode_is_enabled(client, monkeypatch):
+    monkeypatch.setattr(app_module, "SEARCH_USES_ONLY_CACHED_TEXT", True)
+    monkeypatch.setattr(app_module, "list_pdf_files", lambda: ["cached.pdf", "missing.pdf"])
+
+    def fake_cached_text_only(pdf_path):
+        if Path(pdf_path).name == "missing.pdf":
+            raise RuntimeError("Document not indexed yet: missing.pdf")
+        return "constitution clause"
+
+    monkeypatch.setattr(app_module, "get_cached_pdf_text_only", fake_cached_text_only)
+    monkeypatch.setattr(app_module, "advanced_search", lambda text, query: ["match one"])
+    monkeypatch.setattr(app_module, "rank_results", lambda matches, query: matches)
+
+    response = client.post("/api/search", json={"query": "constitution"})
+    payload = response.get_json()
+
+    assert response.status_code == 200
+    assert payload["total_matches"] == 1
+    assert payload["skipped_files"] == 1
+    assert "not indexed yet" in payload["matches_by_file"]["missing.pdf"]["error"]

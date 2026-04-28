@@ -42,6 +42,7 @@ MAX_FILE_SIZE = 16 * 1024 * 1024
 SEARCH_TIMEOUT_SECONDS = _int_from_env("SEARCH_TIMEOUT_SECONDS", 25)
 MAX_MATCHES_PER_FILE = _int_from_env("MAX_MATCHES_PER_FILE", 20)
 MAX_PAGES_TO_EXTRACT = _int_from_env("MAX_PAGES_TO_EXTRACT", 0)
+SEARCH_USES_ONLY_CACHED_TEXT = os.getenv("SEARCH_USES_ONLY_CACHED_TEXT", "1") == "1"
 
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -159,6 +160,17 @@ def get_pdf_text(pdf_path, force_refresh=False):
     return extracted_text, False
 
 
+def get_cached_pdf_text_only(pdf_path):
+    cached_text = load_cached_text(pdf_path)
+    if cached_text is None:
+        raise RuntimeError(
+            f"Document not indexed yet: {os.path.basename(pdf_path)}. "
+            "Re-upload it or rebuild its cache before searching."
+        )
+    logger.info("PDF cache hit file=%s", os.path.basename(pdf_path))
+    return cached_text
+
+
 def classify_search_type(query):
     if '"' in query:
         return "phrase"
@@ -185,6 +197,7 @@ def search_across_pdfs(query):
         "matches_by_file": {},
         "timed_out": False,
         "warning": None,
+        "skipped_files": 0,
     }
 
     start_time = time.monotonic()
@@ -211,7 +224,11 @@ def search_across_pdfs(query):
         file_start = time.monotonic()
 
         try:
-            text, cache_hit = get_pdf_text(pdf_path)
+            if SEARCH_USES_ONLY_CACHED_TEXT:
+                text = get_cached_pdf_text_only(pdf_path)
+                cache_hit = True
+            else:
+                text, cache_hit = get_pdf_text(pdf_path)
             matches = advanced_search(text, query)
 
             if matches:
@@ -260,13 +277,19 @@ def search_across_pdfs(query):
                 "count": 0,
                 "search_type": "error",
             }
+            results["skipped_files"] += 1
 
     results["search_time"] = round(time.monotonic() - start_time, 2)
+    if results["skipped_files"] > 0 and not results["warning"]:
+        results["warning"] = (
+            f"{results['skipped_files']} document(s) were skipped because they are not indexed yet."
+        )
     logger.info(
-        "Search completed query=%r files=%s matches=%s timeout=%s duration=%.2fs",
+        "Search completed query=%r files=%s matches=%s skipped=%s timeout=%s duration=%.2fs",
         query,
         results["files_searched"],
         results["total_matches"],
+        results["skipped_files"],
         results["timed_out"],
         results["search_time"],
     )
