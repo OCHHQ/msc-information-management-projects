@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import shutil
 import sys
@@ -10,6 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+os.environ["PREINDEX_EXISTING_PDFS_ON_STARTUP"] = "0"
 sys.modules.setdefault("PyPDF2", types.SimpleNamespace(PdfReader=object))
 sys.modules.setdefault("pdfplumber", types.SimpleNamespace(open=lambda *args, **kwargs: None))
 sys.modules.setdefault("fitz", types.SimpleNamespace(open=lambda *args, **kwargs: None))
@@ -42,6 +44,8 @@ def test_healthz_reports_pdf_and_cache_counts(client, monkeypatch):
         assert payload["status"] == "ok"
         assert payload["pdf_count"] == 3
         assert payload["cache_count"] == 2
+        assert payload["indexed_pdf_count"] == 2
+        assert payload["pending_pdf_count"] == 1
     finally:
         shutil.rmtree(cache_dir.parent, ignore_errors=True)
 
@@ -108,3 +112,24 @@ def test_api_search_skips_unindexed_files_when_cache_only_mode_is_enabled(client
     assert payload["total_matches"] == 1
     assert payload["skipped_files"] == 1
     assert "not indexed yet" in payload["matches_by_file"]["missing.pdf"]["error"]
+
+
+def test_admin_reindex_rebuilds_existing_pdf_cache(client, monkeypatch):
+    monkeypatch.setattr(app_module, "list_pdf_files", lambda: ["one.pdf", "two.pdf"])
+
+    def fake_index_pdf_file(pdf_path, force_refresh=False):
+        name = Path(pdf_path).name
+        if name == "two.pdf":
+            raise RuntimeError("cannot index")
+        return {"file": name, "cache_hit": False, "chars": 120}
+
+    monkeypatch.setattr(app_module, "index_pdf_file", fake_index_pdf_file)
+
+    response = client.post("/admin/reindex", json={"force_refresh": True})
+    payload = response.get_json()
+
+    assert response.status_code == 207
+    assert payload["processed"] == 2
+    assert payload["indexed"] == 1
+    assert payload["failed"] == 1
+    assert payload["files"][0]["file"] == "one.pdf"

@@ -43,6 +43,7 @@ SEARCH_TIMEOUT_SECONDS = _int_from_env("SEARCH_TIMEOUT_SECONDS", 25)
 MAX_MATCHES_PER_FILE = _int_from_env("MAX_MATCHES_PER_FILE", 20)
 MAX_PAGES_TO_EXTRACT = _int_from_env("MAX_PAGES_TO_EXTRACT", 0)
 SEARCH_USES_ONLY_CACHED_TEXT = os.getenv("SEARCH_USES_ONLY_CACHED_TEXT", "1") == "1"
+PREINDEX_EXISTING_PDFS_ON_STARTUP = os.getenv("PREINDEX_EXISTING_PDFS_ON_STARTUP", "1") == "1"
 
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -99,6 +100,13 @@ def list_pdf_files():
 def cache_path_for_pdf(pdf_path):
     digest = hashlib.sha1(os.path.abspath(pdf_path).encode("utf-8")).hexdigest()
     return os.path.join(CACHE_FOLDER, f"{digest}.json")
+
+
+def count_cache_files():
+    if not os.path.isdir(CACHE_FOLDER):
+        return 0
+
+    return len([name for name in os.listdir(CACHE_FOLDER) if name.lower().endswith(".json")])
 
 
 def load_cached_text(pdf_path):
@@ -169,6 +177,43 @@ def get_cached_pdf_text_only(pdf_path):
         )
     logger.info("PDF cache hit file=%s", os.path.basename(pdf_path))
     return cached_text
+
+
+def index_pdf_file(pdf_path, force_refresh=False):
+    text, cache_hit = get_pdf_text(pdf_path, force_refresh=force_refresh)
+    return {
+        "file": os.path.basename(pdf_path),
+        "cache_hit": cache_hit,
+        "chars": len(text),
+    }
+
+
+def index_existing_pdfs(force_refresh=False):
+    summary = {
+        "processed": 0,
+        "indexed": 0,
+        "cache_hits": 0,
+        "failed": 0,
+        "files": [],
+    }
+
+    for pdf_file in list_pdf_files():
+        pdf_path = os.path.join(UPLOAD_FOLDER, pdf_file)
+        try:
+            result = index_pdf_file(pdf_path, force_refresh=force_refresh)
+            summary["processed"] += 1
+            if result["cache_hit"]:
+                summary["cache_hits"] += 1
+            else:
+                summary["indexed"] += 1
+            summary["files"].append(result)
+        except Exception as exc:
+            summary["processed"] += 1
+            summary["failed"] += 1
+            logger.exception("Render diagnosis startup indexing failed file=%s", pdf_file)
+            summary["files"].append({"file": pdf_file, "error": str(exc)})
+
+    return summary
 
 
 def classify_search_type(query):
@@ -303,6 +348,18 @@ def wants_json_response():
     return "application/json" in accept_header
 
 
+if PREINDEX_EXISTING_PDFS_ON_STARTUP:
+    startup_summary = index_existing_pdfs(force_refresh=False)
+    logger.info(
+        "Startup indexing summary processed=%s indexed=%s cache_hits=%s failed=%s cache_count=%s",
+        startup_summary["processed"],
+        startup_summary["indexed"],
+        startup_summary["cache_hits"],
+        startup_summary["failed"],
+        count_cache_files(),
+    )
+
+
 @app.route("/")
 def index():
     """Main search page."""
@@ -314,11 +371,7 @@ def index():
 def healthz():
     """Simple health check for Render monitoring."""
     pdf_files = list_pdf_files()
-    cache_files = 0
-    if os.path.isdir(CACHE_FOLDER):
-        cache_files = len(
-            [name for name in os.listdir(CACHE_FOLDER) if name.lower().endswith(".json")]
-        )
+    cache_files = count_cache_files()
 
     return jsonify(
         {
@@ -326,8 +379,11 @@ def healthz():
             "timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "pdf_count": len(pdf_files),
             "cache_count": cache_files,
+            "indexed_pdf_count": min(cache_files, len(pdf_files)),
+            "pending_pdf_count": max(len(pdf_files) - cache_files, 0),
             "search_timeout_seconds": SEARCH_TIMEOUT_SECONDS,
             "max_matches_per_file": MAX_MATCHES_PER_FILE,
+            "search_uses_only_cached_text": SEARCH_USES_ONLY_CACHED_TEXT,
         }
     )
 
@@ -372,6 +428,16 @@ def api_files():
         )
 
     return jsonify(files)
+
+
+@app.route("/admin/reindex", methods=["POST"])
+def admin_reindex():
+    """Rebuild text cache for deployed PDFs."""
+    data = request.get_json(silent=True) or {}
+    force_refresh = bool(data.get("force_refresh", False))
+    summary = index_existing_pdfs(force_refresh=force_refresh)
+    status_code = 200 if summary["failed"] == 0 else 207
+    return jsonify(summary), status_code
 
 
 @app.route("/export/<format>", methods=["POST"])
